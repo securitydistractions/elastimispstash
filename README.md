@@ -1,15 +1,15 @@
-# elastimispstash - ElasticSearch enrichment via MISP
+# elastiMISPstash - ElasticSearch enrichment via MISP
 ![alt text](https://www.securitydistractions.com/wp-content/uploads/2019/03/image-1024x547.png)
 
 The original enrichment between Elastic and MISP that we created can be found documented on the following blog post:
 https://www.securitydistractions.com/2019/05/17/enriching-elasticsearch-with-threat-data-part-1-misp/
 
-However this has now been changed slightly, the original enrichment had issues:
+It is highly recommended to follow these blog posts before continuing with running ElastiMISPstash!
 
-1. Handling tags that were assigned to an attribute but also to an event. It was not possible to add the event tags into memcached.
-2. There was also no logstash parsing to handle the string that memcached returned.
+# elastiMISPstash - ElasticSearch enrichment via MISP
+We have decided to finally release this project onto github properly with a proper name and everything, as it has begun to take the shape of something which the community is screaming for.
 
-This new version will handle all of this, to explain how the new concept works we will use an example with the domain "bbc.com".
+To explain how elastiMISPstash works we will use an example with the domain "bbc.com".
 
 1. The python script retrieves all domain indicators from MISP, and places them into memcached.
 2. Logstash takes the domain "bbc.com", and looks up this value against the memcached filter plugin. If it gets a hit it will move to step 3, else it will write "none" to misp.hit.
@@ -17,11 +17,27 @@ This new version will handle all of this, to explain how the new concept works w
 4. MISP returns the response, and the ruby filter strips out the information it needs and then writes this to the logstash event.
 5. Logstash writes the event to elasticsearch.
 
-# Yeah thats great but how the hell do I get it working?!
+***How does this is work technically? Glad you asked.....
+
+1. The python script calls the MISP api and retrieves all IoC's of the datatypes that ElastiMISPStash will support, this is then pushed into memcached which should be running locally on your logstash nodes if possible. The IoC's are placed into memcached with a TTL of 130 seconds.
+
+2. Depending on the fields you choose to enrich, logstash will make lookups against the memcached application. If it does not get a hit, it will exit the memcached filter and skip the ruby filter writing out to elasticsearch that there was no MISP hit.
+
+3. Lets say that there was a match against the memcached application, logstash will write out the tags on the MISP attribute retrieved. It will then enter the next filter, the ruby filter. This filter then makes a second call to the MISP API subsituting in the attribute that resulted in the hit into the API call. 
+
+4. Retrieving the entire JSON response back into the ruby filter, the script then parses the results and tears out the info we have selected to write out to elasticsearch. In the example configuration, we have taken the tags for the attribute and the events that the attribute is known in. We also take the description field from each event and parse these too.
+
+
+# Yeah thats great, enough talk! How the hell do I get it working?!
+ElastiMISPstash currrently has support for ip, domain, md5, sha1 and sha256 datatypes.
+
 In order to get this enrichment running you can follow these steps:
 
-1. Setup the python script to run every minute.
-2. Copy the memcached filter plugin and ruby filter plug scripts to your logstash configuration.
+1. Modify the python script "misppull.py" to suit your needs, enter the network address of your MISP instance and supply your MISP API key where instructed.
+
+2. Copy the memcached filter plugin and ruby filter plugin scripts into your logstash pipeline configuration. Substitute in the field names you want to work with, in our attached example files we are working with destination.domain. We highly recommend to use ECS (elastic common schema) this way you can limit the amount of additional configuration you will need to do this enrichment.
+
+**Caveat, as of right now you will need to add a ruby filter for each datatype you want to work with. This is planned to be corrected in later versions of ElastiMISPstash but this is just a comestic thing. It's effect on performance will be minimal.
 
 
 
