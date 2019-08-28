@@ -17,7 +17,7 @@ To explain how elastiMISPstash works we will use an example with the domain "bbc
 4. MISP returns the response, and the ruby filter strips out the information it needs and then writes this to the logstash event.
 5. Logstash writes the event to elasticsearch.
 
-***How does this is work technically? Glad you asked.....
+***How does this is work technically? Glad you asked.....***
 
 1. The python script calls the MISP api and retrieves all IoC's of the datatypes that ElastiMISPStash will support, this is then pushed into memcached which should be running locally on your logstash nodes if possible. The IoC's are placed into memcached with a TTL of 130 seconds.
 
@@ -37,7 +37,7 @@ In order to get this enrichment running you can follow these steps:
 
 2. Copy the memcached filter plugin and ruby filter plugin scripts into your logstash pipeline configuration. Substitute in the field names you want to work with, in our attached example files we are working with destination.domain. We highly recommend to use ECS (elastic common schema) this way you can limit the amount of additional configuration you will need to do this enrichment.
 
-**Caveat, as of right now you will need to add a ruby filter for each datatype you want to work with. This is planned to be corrected in later versions of ElastiMISPstash but this is just a comestic thing. It's effect on performance will be minimal.
+**Caveat, as of right now you will need to add a ruby filter for each datatype you want to work with. This is planned to be corrected in later versions of ElastiMISPstash but this is just a comestic thing. It's effect on performance will be minimal.**
 
 
 
