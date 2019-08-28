@@ -25,4 +25,4 @@ if __name__ == '__main__':
             for k,v in tag.items():
                 if(k=='name' and 'Feed-' in tag['name']):
                      tagList.append(str(v))
-            client.set(str(item['type'] + '-' + item['value']), tagList, 130)
+        client.set(str(item['type'] + '-' + item['value']), tagList, 130)
