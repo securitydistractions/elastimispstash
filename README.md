@@ -23,7 +23,7 @@ To explain how elastiMISPstash works we will use an example with the domain "bbc
 
 ***How does this is work technically? Glad you asked.....***
 
-**1.** The python script calls the MISP api and retrieves all IoC's of the datatypes that ElastiMISPStash will support, this is then pushed into memcached which should be running locally on your logstash nodes if possible. The IoC's are placed into memcached with a TTL of 130 seconds.
+**1.** The python script calls the MISP API and retrieves all IoC's of the datatypes that ElastiMISPStash will support, this is then pushed into memcached which should be running locally on your logstash nodes if possible. The IoC's are placed into memcached with a TTL of 130 seconds.
 
 **2.** Depending on the fields you choose to enrich, logstash will make lookups against the memcached application. If it does not get a hit, it will exit the memcached filter and skip the ruby filter writing out to elasticsearch that there was no MISP hit.
 
@@ -37,9 +37,9 @@ ElastiMISPstash currrently has support for ip, domain, md5, sha1 and sha256 data
 
 In order to get this enrichment running you can follow these steps:
 
-**1.** Modify the python script "misppull.py" to suit your needs, enter the network address of your MISP instance and supply your MISP API key where instructed.
+**1.** Modify the python script "misppull.py" to suit your needs, enter the network address of your MISP instance and supply your MISP API key where instructed. Set this script to run every minute...
 
-**2.** Copy the memcached filter plugin and ruby filter plugin scripts into your logstash pipeline configuration. Substitute in the field names you want to work with, in our attached example files we are working with destination.domain. We highly recommend to use ECS (elastic common schema) this way you can limit the amount of additional configuration you will need to do this enrichment.
+**2.** Copy the memcached filter plugin and ruby filter plugin scripts into your logstash pipeline configuration. Ensure that the order is correct, the memcached filter must come first. Substitute in the field names you want to work with, in our attached example files we are working with destination.domain. We highly recommend to use ECS (elastic common schema) this way you can limit the amount of additional configuration you will need to do this enrichment.
 
 **Caveat, as of right now you will need to add a ruby filter for each datatype you want to work with. This is planned to be corrected in later versions of ElastiMISPstash but this is just a comestic thing. It's effect on performance will be minimal.**
 
