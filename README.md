@@ -46,7 +46,7 @@ In order to get this enrichment running you can follow these steps:
 
 **2.** Copy the memcached filter plugin and ruby filter plugin scripts into your logstash pipeline configuration. Ensure that the order is correct, the memcached filter must come first. Substitute in the field names you want to work with, in our attached example files we are working with destination.domain. We highly recommend to use ECS (elastic common schema) this way you can limit the amount of additional configuration you will need to do this enrichment.
 
-**Caveat, as of right now you will need to add a ruby filter for each datatype you want to work with. This is planned to be corrected in later versions of ElastiMISPstash but this is just a comestic thing. It's effect on performance will be minimal.**
+**Caveat, as of right now you will need to add a ruby filter for each datatype you want to work with. This is planned to be corrected in later versions of ElastiMISPstash but this is just a cosmestic thing. It's effect on performance will be minimal.**
 
 
 
