@@ -32,6 +32,7 @@ To explain how elastiMISPstash works we will use an example with the domain "bbc
 **4.** Retrieving the entire JSON response back into the ruby filter, the script then parses the results and tears out the info we have selected to write out to elasticsearch. In the example configuration, we have taken the tags for the attribute and the events that the attribute is known in. We also take the description field from each event and parse these too.
 
 **How does it look in the end?**
+
 Here is a screenshot from a recent example demonstration that we gave at our local OWASP chapter meetup. This is showing MISP enrichment working against the domain "c2.0wasp.dk".
 
 ![image](https://user-images.githubusercontent.com/46198611/63843840-59733080-c987-11e9-9e4c-be90c7e0bd21.png)
