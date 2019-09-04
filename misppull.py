@@ -29,7 +29,7 @@ if __name__ == '__main__':
   for dt in dataTypes:
     response = misppull(dt)
     data=response.json()
-    if data:
+    if 'response' in data:
       for item in data["response"]["Attribute"]:
         tagList=[]
         for tag in item['Tag']:
